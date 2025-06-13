@@ -1,20 +1,40 @@
-<h3>todo</h3>
+{% extends 'partials/base.html' %}
 
-<form method="POST" action="/">
-    {% csrf_token %}
-    {{form.title}}
-    <input type="submit" name="Create task">
-</form>
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4"> To-Do List</h2>
 
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Add a New Task</h5>
+            <form method="POST" action="/" class="d-flex gap-3 align-items-center">
+                {% csrf_token %}
+                {{ form.title }}
+                <button type="submit" class="btn btn-primary">Create Task</button>
+            </form>
+        </div>
+    </div>
 
-{% for task in tasks %}
- <div>
-    <a href="{% url 'update_task' task.id%}">Update</a>
-    <a href="{% url 'delete' task.id%}">Delete</a>
-    {% if task.complete ==True %}
-    <strike>{{task}}</strike>
+    {% if tasks %}
+        <div class="list-group">
+            {% for task in tasks %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if task.complete %}
+                            <strike class="text-muted">{{ task }}</strike>
+                        {% else %}
+                            <span>{{ task }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="{% url 'update_task' task.id %}" class="btn btn-sm btn-outline-success me-2">Update</a>
+                        <a href="{% url 'delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
-    <span>{{task}}</span>
-    {% endif}
- </div>
-{% endfor %}
+        <p class="text-muted text-center">No tasks yet. Add your first one above!</p>
+    {% endif %}
+</div>
+{% endblock %}
